@@ -1719,16 +1719,16 @@ int32_t _gid_stop_timer(GIDTimer* timer)
 #define assert_fail_format(message, ...)                                      \
 {                                                                             \
   _gid_cur_run.run_result = GID_RUN_RESULT_FAILED;                            \
-  char _gidMsgBuf[GID_MAX_MESSAGE_LENGTH];                                        \
-  snprintf(_gidMsgBuf, GID_MAX_MESSAGE_LENGTH, (message), __VA_ARGS__);           \
-  GIDTestFailure* _gidFailure = _gid_create_test_failure(                         \
+  char _gidMsgBuf[GID_MAX_MESSAGE_LENGTH];                                    \
+  snprintf(_gidMsgBuf, GID_MAX_MESSAGE_LENGTH, (message), __VA_ARGS__);       \
+  GIDTestFailure* _gidFailure = _gid_create_test_failure(                     \
     _gid_cur_test->name,                                                      \
     _gid_cur_run.configuration,                                               \
-    _gidMsgBuf,                                                                   \
+    _gidMsgBuf,                                                               \
     __FILE__,                                                                 \
     __LINE__,                                                                 \
     _gid_cur_run.step);                                                       \
-  _gid_add_test_failure(_gid_cur_test, _gidFailure);                              \
+  _gid_add_test_failure(_gid_cur_test, _gidFailure);                          \
   goto _GID_TEST_END;                                                         \
 }
 
@@ -1766,14 +1766,14 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_int_eq(expected, actual)                                       \
   {                                                                           \
-    int64_t _gidExpVal = (expected);                                              \
-    int64_t _gidActVal = (actual);                                                \
+    int64_t _gidExpVal = (expected);                                          \
+    int64_t _gidActVal = (actual);                                            \
     assert_message_format(                                                    \
-      _gidExpVal == _gidActVal,                                                       \
+      _gidExpVal == _gidActVal,                                               \
       "Expected '"#actual"' to evaluate to %"PRId64                           \
       ", but instead it evaluated to %"PRId64".",                             \
-      _gidExpVal,                                                                 \
-      _gidActVal);                                                                \
+      _gidExpVal,                                                             \
+      _gidActVal);                                                            \
   }
 
 /* Asserts that a signed integer is not equal to a specific value.
@@ -1781,12 +1781,12 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_int_not_eq(unexpected, actual)                                 \
   {                                                                           \
-    int64_t _gidExpVal = (unexpected);                                            \
-    int64_t _gidActVal = (actual);                                                \
+    int64_t _gidExpVal = (unexpected);                                        \
+    int64_t _gidActVal = (actual);                                            \
     assert_message_format(                                                    \
-      _gidExpVal != _gidActVal,                                                       \
+      _gidExpVal != _gidActVal,                                               \
       "'"#actual"' evaluated to the unexpected value %"PRId64".",             \
-      _gidExpVal);                                                                \
+      _gidExpVal);                                                            \
   }
 
 /* Asserts that an unsigned integer is equal to an expected value.
@@ -1794,14 +1794,14 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_uint_eq(expected, actual)                                      \
   {                                                                           \
-    uint64_t _gidExpVal = (expected);                                             \
-    uint64_t _gidActVal = (actual);                                               \
+    uint64_t _gidExpVal = (expected);                                         \
+    uint64_t _gidActVal = (actual);                                           \
     assert_message_format(                                                    \
-      _gidExpVal == _gidActVal,                                                       \
+      _gidExpVal == _gidActVal,                                               \
       "Expected '"#actual"' to evaluate to %"PRIu64                           \
       ", but instead it evaluated to %"PRIu64".",                             \
-      _gidExpVal,                                                                 \
-      _gidActVal);                                                                \
+      _gidExpVal,                                                             \
+      _gidActVal);                                                            \
   }
 
 /* Asserts that an unsigned integer is not equal to a specific value.
@@ -1809,12 +1809,12 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_uint_not_eq(unexpected, actual)                                \
   {                                                                           \
-    uint64_t _gidExpVal = (unexpected);                                           \
-    uint64_t _gidActVal = (actual);                                               \
+    uint64_t _gidExpVal = (unexpected);                                       \
+    uint64_t _gidActVal = (actual);                                           \
     assert_message_format(                                                    \
-      _gidExpVal != _gidActVal,                                                       \
+      _gidExpVal != _gidActVal,                                               \
       "'"#actual"' evaluated to the unexpected value %"PRIu64".",             \
-      _gidExpVal);                                                                \
+      _gidExpVal);                                                            \
   }
 
 /* Asserts that a pointer is equal to an expected value.
@@ -1822,14 +1822,14 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_pointer_eq(expected, actual)                                   \
   {                                                                           \
-    void* _gidExpVal = (expected);                                                \
-    void* _gidActVal = (actual);                                                  \
+    void* _gidExpVal = (expected);                                            \
+    void* _gidActVal = (actual);                                              \
     assert_message_format(                                                    \
-      _gidExpVal == _gidActVal,                                                       \
+      _gidExpVal == _gidActVal,                                               \
       "Expected '"#actual"' to evaluate to %p"                                \
       ", but instead it evaluated to %p.",                                    \
-      _gidExpVal,                                                                 \
-      _gidActVal);                                                                \
+      _gidExpVal,                                                             \
+      _gidActVal);                                                            \
   }
 
 /* Asserts that a pointer is not equal to a specific value.
@@ -1837,31 +1837,31 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_pointer_not_eq(unexpected, actual)                             \
   {                                                                           \
-    void* _gidExpVal = (unexpected);                                              \
-    void* _gidActVal = (actual);                                                  \
+    void* _gidExpVal = (unexpected);                                          \
+    void* _gidActVal = (actual);                                              \
     assert_message_format(                                                    \
-      _gidExpVal != _gidActVal,                                                       \
+      _gidExpVal != _gidActVal,                                               \
       "'"#actual"' evaluated to the unexpected value %p.",                    \
-      _gidExpVal);                                                                \
+      _gidExpVal);                                                            \
   }
 
 /* Asserts that a pointer is NULL.
  * @param pointer - The pointer. */
 #define assert_null(pointer)                                                  \
   {                                                                           \
-    void* _gidActual = (pointer);                                                 \
+    void* _gidActual = (pointer);                                             \
     assert_message_format(                                                    \
-      _gidActual == NULL,                                                         \
+      _gidActual == NULL,                                                     \
       "'"#pointer"' was %p, not NULL.",                                       \
-      _gidActual);                                                                \
+      _gidActual);                                                            \
   }
 
 /* Asserts that a pointer is anything except NULL.
  * @param pointer - The pointer. */
 #define assert_not_null(pointer)                                              \
   {                                                                           \
-    void* _gidActual = (pointer);                                                 \
-    assert_message(_gidActual != NULL, "'"#pointer"' was NULL.");                 \
+    void* _gidActual = (pointer);                                             \
+    assert_message(_gidActual != NULL, "'"#pointer"' was NULL.");             \
   }
 
 /* Asserts that a null-terminated string is equal to an expected value.
@@ -1869,14 +1869,14 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_string_eq(expected, actual)                                    \
   {                                                                           \
-    char* _gidExpVal = (char*)(expected);                                         \
-    char* _gidActVal = (char*)(actual);                                           \
+    char* _gidExpVal = (char*)(expected);                                     \
+    char* _gidActVal = (char*)(actual);                                       \
     assert_message_format(                                                    \
-      strcmp(_gidExpVal, _gidActVal)==0,                                              \
+      strcmp(_gidExpVal, _gidActVal)==0,                                      \
       "Expected "#actual" to be equal to \"%s\""                              \
       ", but instead it was \"%s\".",                                         \
-      _gidExpVal,                                                                 \
-      _gidActVal);                                                                \
+      _gidExpVal,                                                             \
+      _gidActVal);                                                            \
   }
 
 /* Asserts that a null-terminated string is not equal to a specific value.
@@ -1884,12 +1884,12 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_string_not_eq(unexpected, actual)                              \
   {                                                                           \
-    char* _gidExpVal = (char*)(unexpected);                                       \
-    char* _gidActVal = (char*)(actual);                                           \
+    char* _gidExpVal = (char*)(unexpected);                                   \
+    char* _gidActVal = (char*)(actual);                                       \
     assert_message_format(                                                    \
-      strcmp(_gidExpVal, _gidActVal)!=0,                                              \
+      strcmp(_gidExpVal, _gidActVal)!=0,                                      \
       #actual" was equal to the unexpected value \"%s\".",                    \
-      _gidActVal);                                                                \
+      _gidActVal);                                                            \
   }
 
 /* Asserts that a floating point value is equal to an expected value.
@@ -1897,14 +1897,14 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_double_eq(expected, actual)                                    \
   {                                                                           \
-    double _gidExpVal = (expected);                                               \
-    double _gidActVal = (actual);                                                 \
+    double _gidExpVal = (expected);                                           \
+    double _gidActVal = (actual);                                             \
     assert_message_format(                                                    \
-      _gidExpVal == _gidActVal,                                                       \
+      _gidExpVal == _gidActVal,                                               \
       "Expected '"#actual"' to evaluate to %f"                                \
       ", but instead it evaluated to %f.",                                    \
-      _gidExpVal,                                                                 \
-      _gidActVal);                                                                \
+      _gidExpVal,                                                             \
+      _gidActVal);                                                            \
   }
 
 /* Asserts that a floating point value is not equal to a specific value.
@@ -1912,12 +1912,12 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_double_not_eq(unexpected, actual)                              \
   {                                                                           \
-    double _gidExpVal = (unexpected);                                             \
-    double _gidActVal = (actual);                                                 \
+    double _gidExpVal = (unexpected);                                         \
+    double _gidActVal = (actual);                                             \
     assert_message_format(                                                    \
-      _gidExpVal != _gidActVal,                                                       \
+      _gidExpVal != _gidActVal,                                               \
       "'"#actual"' evaluated to the unexpected value %f.",                    \
-      _gidActVal);                                                                \
+      _gidActVal);                                                            \
   }
 
 /* Asserts that one portion of memory is equal to another.
@@ -1926,20 +1926,23 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param size - The number of bytes to compare. */
 #define assert_memory_eq(expected, actual, size)                              \
   {                                                                           \
-    const uint8_t* _gidExpBuf = (const uint8_t*)(expected);                       \
-    const uint8_t* _gidActBuf = (const uint8_t*)(actual);                         \
-    size_t _gidCmpSize = (size);                                                  \
-    size_t _gidFirstDiff = _gid_cmp_memory(_gidExpBuf, _gidActBuf, _gidCmpSize);              \
+    const uint8_t* _gidExpBuf = (const uint8_t*)(expected);                   \
+    const uint8_t* _gidActBuf = (const uint8_t*)(actual);                     \
+    size_t _gidCmpSize = (size);                                              \
+    size_t _gidFirstDiff = _gid_cmp_memory(                                   \
+      _gidExpBuf,                                                             \
+      _gidActBuf,                                                             \
+      _gidCmpSize);                                                           \
     assert_message_format(                                                    \
-      _gidFirstDiff == _gidCmpSize,                                                   \
+      _gidFirstDiff == _gidCmpSize,                                           \
       "Expected "#actual" to have the same %"PRIu64" bytes as "               \
       #expected", but "#actual"[%"PRIu64"]=0x%x and "#expected"[%"            \
       PRIu64"]=0x%x.",                                                        \
-      (uint64_t)_gidCmpSize,                                                      \
-      (uint64_t)_gidFirstDiff,                                                    \
-      _gidActBuf[_gidFirstDiff],                                                      \
-      (uint64_t)_gidFirstDiff,                                                    \
-      _gidExpBuf[_gidFirstDiff]);                                                     \
+      (uint64_t)_gidCmpSize,                                                  \
+      (uint64_t)_gidFirstDiff,                                                \
+      _gidActBuf[_gidFirstDiff],                                              \
+      (uint64_t)_gidFirstDiff,                                                \
+      _gidExpBuf[_gidFirstDiff]);                                             \
   }
 
 /* Asserts that one portion of memory is not equal to another.
@@ -1948,12 +1951,15 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param size - The number of bytes to compare. */
 #define assert_memory_not_eq(unexpected, actual, size)                        \
   {                                                                           \
-    const uint8_t* _gidExpBuf = (const uint8_t*)(unexpected);                     \
-    const uint8_t* _gidActBuf = (const uint8_t*)(actual);                         \
-    size_t _gidCmpSize = (size);                                                  \
-    size_t _gidFirstDiff = _gid_cmp_memory(_gidExpBuf, _gidActBuf, _gidCmpSize);              \
+    const uint8_t* _gidExpBuf = (const uint8_t*)(unexpected);                 \
+    const uint8_t* _gidActBuf = (const uint8_t*)(actual);                     \
+    size_t _gidCmpSize = (size);                                              \
+    size_t _gidFirstDiff = _gid_cmp_memory(                                   \
+      _gidExpBuf,                                                             \
+      _gidActBuf,                                                             \
+      _gidCmpSize);                                                           \
     assert_message(                                                           \
-      _gidFirstDiff != _gidCmpSize,                                                   \
+      _gidFirstDiff != _gidCmpSize,                                           \
       #actual" has the same exact memory as "#unexpected".");                 \
   }
 
@@ -1966,11 +1972,13 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param var_name - The name of the variable. */
 #define _gid_read_variable(type, var_name)                                    \
           {                                                                   \
-            type* _gidValPtr;                                                    \
-            GIDParamBase* _gidParam = _gid_find_param(_gid_cur_test, #var_name);  \
-            _gidValPtr = _gid_param_get_value(_gidParam);                            \
-            if(_gidValPtr != NULL)                                               \
-              ((type*)&var_name)[0] = (*_gidValPtr);                             \
+            type* _gidValPtr;                                                 \
+            GIDParamBase* _gidParam = _gid_find_param(                        \
+              _gid_cur_test,                                                  \
+              #var_name);                                                     \
+            _gidValPtr = _gid_param_get_value(_gidParam);                     \
+            if(_gidValPtr != NULL)                                            \
+              ((type*)&var_name)[0] = (*_gidValPtr);                          \
             else                                                              \
               ((type*)&var_name)[0] = (type)NULL;                             \
           }
@@ -2271,14 +2279,14 @@ void _gid_test_suite_func_##suite_name()                                      \
 #define IntRow(...)                                                           \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          int64_t _gidValues[] = {__VA_ARGS__};                                   \
-          size_t _gidValueCount = sizeof(_gidValues)/sizeof(int64_t);                 \
-          GIDRowParamValue* _gidRow = _gid_create_row_param_value(                \
-            _gidValues,                                                           \
+          int64_t _gidValues[] = {__VA_ARGS__};                               \
+          size_t _gidValueCount = sizeof(_gidValues)/sizeof(int64_t);         \
+          GIDRowParamValue* _gidRow = _gid_create_row_param_value(            \
+            _gidValues,                                                       \
             sizeof(int64_t),                                                  \
-            _gidValueCount,                                                       \
+            _gidValueCount,                                                   \
             GID_ROW_PARAM_TYPE_INT64);                                        \
-          _gid_add_row_param_value(_gid_int_row_params, _gidRow);                 \
+          _gid_add_row_param_value(_gid_int_row_params, _gidRow);             \
         }
 
 /* Defines a row of unsigned integer values to pass to the test.
@@ -2287,14 +2295,14 @@ void _gid_test_suite_func_##suite_name()                                      \
 #define UIntRow(...)                                                          \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          uint64_t _gidValues[] = {__VA_ARGS__};                                  \
-          size_t _gidValueCount = sizeof(_gidValues)/sizeof(uint64_t);                \
-          GIDRowParamValue* _gidRow = _gid_create_row_param_value(                \
-            _gidValues,                                                           \
+          uint64_t _gidValues[] = {__VA_ARGS__};                              \
+          size_t _gidValueCount = sizeof(_gidValues)/sizeof(uint64_t);        \
+          GIDRowParamValue* _gidRow = _gid_create_row_param_value(            \
+            _gidValues,                                                       \
             sizeof(uint64_t),                                                 \
-            _gidValueCount,                                                       \
+            _gidValueCount,                                                   \
             GID_ROW_PARAM_TYPE_UINT64);                                       \
-          _gid_add_row_param_value(_gid_uint_row_params, _gidRow);                \
+          _gid_add_row_param_value(_gid_uint_row_params, _gidRow);            \
         }
 
 /* Defines a row of string values to pass to the test.
@@ -2317,14 +2325,14 @@ void _gid_test_suite_func_##suite_name()                                      \
 #define StringRow(...)                                                        \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          char* _gidValues[] = {__VA_ARGS__};                                     \
-          size_t _gidValueCount = sizeof(_gidValues)/sizeof(char*);                   \
-          GIDRowParamValue* _gidRow = _gid_create_row_param_value(                \
-            _gidValues,                                                           \
+          char* _gidValues[] = {__VA_ARGS__};                                 \
+          size_t _gidValueCount = sizeof(_gidValues)/sizeof(char*);           \
+          GIDRowParamValue* _gidRow = _gid_create_row_param_value(            \
+            _gidValues,                                                       \
             sizeof(char*),                                                    \
-            _gidValueCount,                                                       \
+            _gidValueCount,                                                   \
             GID_ROW_PARAM_TYPE_STRING);                                       \
-          _gid_add_row_param_value(_gid_string_row_params, _gidRow);              \
+          _gid_add_row_param_value(_gid_string_row_params, _gidRow);          \
         }
 
 /* Defines a parameter variable that will be tested with a range of signed
@@ -2352,13 +2360,13 @@ void _gid_test_suite_func_##suite_name()                                      \
         int64_t var_name;                                                     \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          int64_t _gidVmin = (int64_t)min_val;                                    \
-          int64_t _gidVmax = (int64_t)max_val;                                    \
-          GIDParamBase* _gidParam = _gid_create_range_param(                      \
+          int64_t _gidVmin = (int64_t)min_val;                                \
+          int64_t _gidVmax = (int64_t)max_val;                                \
+          GIDParamBase* _gidParam = _gid_create_range_param(                  \
             #var_name,                                                        \
-            _gidVmin,                                                             \
-            _gidVmax, 1);                                                         \
-          _gid_add_param(_gid_added_test, _gidParam);                             \
+            _gidVmin,                                                         \
+            _gidVmax, 1);                                                     \
+          _gid_add_param(_gid_added_test, _gidParam);                         \
         }                                                                     \
         else if(_gid_is_this_test_running)                                    \
         {                                                                     \
@@ -2376,14 +2384,14 @@ void _gid_test_suite_func_##suite_name()                                      \
         uint64_t var_name;                                                    \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          uint64_t _gidVmin = (uint64_t)min_val;                                  \
-          uint64_t _gidVmax = (uint64_t)max_val;                                  \
-          GIDParamBase* _gidParam = _gid_create_range_param(                      \
+          uint64_t _gidVmin = (uint64_t)min_val;                              \
+          uint64_t _gidVmax = (uint64_t)max_val;                              \
+          GIDParamBase* _gidParam = _gid_create_range_param(                  \
             #var_name,                                                        \
-            _gidVmin,                                                             \
-            _gidVmax,                                                             \
+            _gidVmin,                                                         \
+            _gidVmax,                                                         \
             0);                                                               \
-          _gid_add_param(_gid_added_test, _gidParam);                             \
+          _gid_add_param(_gid_added_test, _gidParam);                         \
         }                                                                     \
         else if(_gid_is_this_test_running)                                    \
         {                                                                     \
@@ -2413,15 +2421,15 @@ void _gid_test_suite_func_##suite_name()                                      \
         int64_t var_name;                                                     \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          int64_t _gidValues[] = {__VA_ARGS__};                                   \
-          size_t _gidCount = sizeof(_gidValues)/sizeof(_gidValues[0]);                    \
-          GIDParamBase* _gidParam = _gid_create_enum_param(                       \
+          int64_t _gidValues[] = {__VA_ARGS__};                               \
+          size_t _gidCount = sizeof(_gidValues)/sizeof(_gidValues[0]);        \
+          GIDParamBase* _gidParam = _gid_create_enum_param(                   \
             #var_name,                                                        \
             GID_ENUM_PARAM_TYPE_INT64,                                        \
-            _gidValues,                                                           \
+            _gidValues,                                                       \
             sizeof(int64_t),                                                  \
-            _gidCount);                                                           \
-          _gid_add_param(_gid_added_test, _gidParam);                             \
+            _gidCount);                                                       \
+          _gid_add_param(_gid_added_test, _gidParam);                         \
         }                                                                     \
         else if(_gid_is_this_test_running)                                    \
         {                                                                     \
@@ -2440,15 +2448,15 @@ void _gid_test_suite_func_##suite_name()                                      \
         uint64_t var_name;                                                    \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          uint64_t _gidValues[] = {__VA_ARGS__};                                  \
-          size_t _gidCount = sizeof(_gidValues)/sizeof(_gidValues[0]);                    \
-          GIDParamBase* _gidParam = _gid_create_enum_param(                       \
+          uint64_t _gidValues[] = {__VA_ARGS__};                              \
+          size_t _gidCount = sizeof(_gidValues)/sizeof(_gidValues[0]);        \
+          GIDParamBase* _gidParam = _gid_create_enum_param(                   \
             #var_name,                                                        \
             GID_ENUM_PARAM_TYPE_UINT64,                                       \
-            _gidValues,                                                           \
+            _gidValues,                                                       \
             sizeof(uint64_t),                                                 \
-            _gidCount);                                                           \
-          _gid_add_param(_gid_added_test, _gidParam);                             \
+            _gidCount);                                                       \
+          _gid_add_param(_gid_added_test, _gidParam);                         \
         }                                                                     \
         else if(_gid_is_this_test_running)                                    \
         {                                                                     \
@@ -2478,15 +2486,15 @@ void _gid_test_suite_func_##suite_name()                                      \
         char* var_name;                                                       \
         if(_gid_is_initializing)                                              \
         {                                                                     \
-          char* _gidValues[] = {__VA_ARGS__};                                     \
-          size_t _gidCount = sizeof(_gidValues)/sizeof(_gidValues[0]);                    \
-          GIDParamBase* _gidParam = _gid_create_enum_param(                       \
+          char* _gidValues[] = {__VA_ARGS__};                                 \
+          size_t _gidCount = sizeof(_gidValues)/sizeof(_gidValues[0]);        \
+          GIDParamBase* _gidParam = _gid_create_enum_param(                   \
             #var_name,                                                        \
             GID_ENUM_PARAM_TYPE_STRING,                                       \
-            _gidValues,                                                           \
+            _gidValues,                                                       \
             sizeof(char*),                                                    \
-            _gidCount);                                                           \
-          _gid_add_param(_gid_added_test, _gidParam);                             \
+            _gidCount);                                                       \
+          _gid_add_param(_gid_added_test, _gidParam);                         \
         }                                                                     \
         else if(_gid_is_this_test_running)                                    \
         {                                                                     \
