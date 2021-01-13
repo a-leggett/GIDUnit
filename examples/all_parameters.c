@@ -14,7 +14,9 @@ BEGIN_TEST_SUITE(AllParameters)
     StringRow("ALPHA", "BRAVO", "CHARLIE")
     EnumParam(i, -1, -2, -3)
     UnsignedEnumParam(j, 1, 2, 3)
-    StringEnumParam(animal, "Cat", "Dog"))
+    StringEnumParam(animal, "Cat", "Dog")
+    RangeParam(k, -5, 5)
+    UnsignedRangeParam(m, 0, 10))
   {
     assert(int_row[0] < 100);
     assert(uint_row[0] < 100);
