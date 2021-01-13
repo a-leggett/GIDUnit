@@ -155,6 +155,10 @@ int main()
  * (that is, the string that shows the values of each variable in a test). */
 #define GID_MAX_CONFIGURATION_STRING_LENGTH (256)
 
+/* The amount of corruption-detection padding to add to the ends of memory
+ * that is allocated by the gid_malloc function. */
+#define GID_MALLOC_PADDING (32)
+
 /* Checks how many bytes of memory are equivalent.
  * @param a - Pointer to the first memory object.
  * @param b - Pointer to the second memory object.
@@ -2493,5 +2497,162 @@ void _gid_test_suite_func_##suite_name()                                      \
           _gid_read_variable(char*, var_name);                                \
         }
 
+
+
+
+/* Defines the expected byte at a particular location in a 'corruption
+ * detection signature'.
+ * @param index - The index of the byte.
+ * @returns - The expected byte at the index. */
+#define _gid_mem_signature_byte(index) ((uint8_t)((((index)+1))*37))
+
+/* Writes a 'corruption detection signature' to memory.
+ * @param dst - The destination buffer.
+ * @param offset - The index of the first signature byte to write.
+ * @param len - The length of the signature to write. */
+void _gid_write_mem_signature(uint8_t* dst, int64_t offset, int64_t len)
+{
+  for(int64_t i = 0; i < len; i++)
+    dst[offset+i] = _gid_mem_signature_byte(offset+i);
+}
+
+/* Verifies that a 'corruption detection signature' exists unmodified
+ * in a particular portion of memory.
+ * @param src - The memory to scan.
+ * @param offset - The index of the first byte to scan.
+ * @param len - The number of bytes to scan.
+ * @returns - Zero if the signature was corrupted, otherwise non-zero. */
+int _gid_verify_mem_signature(const uint8_t* src, int64_t offset, int64_t len)
+{
+  for(int64_t i = 0; i < len; i++)
+  {
+    if(src[offset+i] != _gid_mem_signature_byte(offset+i))
+      return 0;
+  }
+  return 1;
+}
+
+/* Structure that tracks information about memory allocated by gid_malloc. */
+typedef struct GIDMallocInfo
+{
+  /* The size of the payload, as requested by the caller of gid_malloc. */
+  int64_t payload_size;
+
+  /* Must be equal to 'payload_size', otherwise this data was corrupted. */
+  int64_t payload_size_verify;
+
+  /* Must be equal to 0xDEADBEEF, otherwise this data was corrupted. */
+  int32_t deadbeef;
+
+  /* Checksum of the data in this GIDMallocInfo, including any potential padding. */
+  int32_t checksum;
+} GIDMallocInfo;
+
+/* Calculates the expected 'checksum' field value of a GIDMallocInfo structure.
+ * @param info - Pointer to the GIDMallocInfo for which to calculate the checksum.
+ * @returns - The calculated checksum. */
+int32_t _gid_calc_malloc_info_checksum(const GIDMallocInfo* info)
+{
+  GIDMallocInfo* inf = (GIDMallocInfo*)info;
+  //Backup the stored 'checksum' value
+  int32_t checksumBackup = inf->checksum;
+
+  //Write zero to the checksum, since it's not part of calculation
+  inf->checksum = 0;
+
+  //Calculate the checksum one byte at a time
+  uint8_t* raw = (uint8_t*)info;
+  int32_t ret = 0;
+  for(size_t i = 0; i < sizeof(GIDMallocInfo); i++)
+    ret += (i+1)*11*raw[i];
+
+  //Restore the original checksum so caller's info isn't changed
+  inf->checksum = checksumBackup;
+  return ret;
+}
+
+/* Helper function to allocate memory that, upon free, will detect whether any
+ * out-of-bounds writes were performed. This is useful for testing code that
+ * initializes data in a buffer, perhaps in a complex manner, to ensure that
+ * the initialization code stays within its given bounds. When gid_free is
+ * called, the padding to the left and right of the returned memory will
+ * be scanned for corruption (and an assert failure will happen if corruption
+ * is detected).
+ * @param size - The number of bytes to allocate.
+ * @returns - A pointer to the allocated memory. */
+void* gid_malloc(int64_t size)
+{
+  if(size < 0)
+    return NULL;
+  size_t internalSize = GID_MALLOC_PADDING + sizeof(GIDMallocInfo) + size + GID_MALLOC_PADDING;
+  uint8_t* mem = malloc(internalSize);
+  if(mem == NULL)
+    return NULL;
+
+  /* Write a corruption detection signature to the entire buffer.
+    This has two benefits: Upon free, it lets us check if the
+    'outside' memory was corrupted (hinting that the code wrote memory
+    out of bounds, a very bad situation!). It also simulates garbage
+    initial data, which helps prove that the application's initialization
+    code is correct. */
+  _gid_write_mem_signature(mem, 0, internalSize);
+
+  /* Write information about the allocation just before the returned memory portion. */
+  GIDMallocInfo* info = (GIDMallocInfo*)(mem+GID_MALLOC_PADDING);
+  info->payload_size = size;
+  info->payload_size_verify = size;
+  info->deadbeef = 0xDEADBEEF;
+  int32_t infoChecksum = _gid_calc_malloc_info_checksum(info);
+  info->checksum = infoChecksum;
+
+  /* Only give the caller the 'interior' portion of memory. */
+  return (void*)(mem+GID_MALLOC_PADDING+sizeof(GIDMallocInfo));
+}
+
+/* Checks whether memory was corrupted outside of the allocated bounds,
+ * and frees the allocated memory.
+ * @param src - Pointer to the memory that was allocated by gid_malloc.
+ * @returns - Zero if corruption was detected outside of the bounds that
+ *          were originally allocated by gid_malloc, otherwise non-zero. */
+int _gid_free_and_check(uint8_t* src)
+{
+  if(src == NULL)
+    return 0;
+  uint8_t* mem = src;
+
+  //Read the GIDMallocInfo for this memory block
+  GIDMallocInfo* info = (GIDMallocInfo*)(src-sizeof(GIDMallocInfo));
+
+  //Verify that the GIDMallocInfo wasn't corrupted
+  if(info->payload_size != info->payload_size_verify
+    || info->deadbeef != 0xDEADBEEF
+    || info->checksum != _gid_calc_malloc_info_checksum(info))
+    return 0;
+
+  int64_t size = info->payload_size;
+  uint8_t* raw = mem - (sizeof(GIDMallocInfo)+GID_MALLOC_PADDING);
+
+  //Check that the corruption-detection paddings weren't corrupted
+  int ret = _gid_verify_mem_signature(raw, 0, GID_MALLOC_PADDING)
+    && _gid_verify_mem_signature(raw, GID_MALLOC_PADDING+sizeof(GIDMallocInfo)+size, GID_MALLOC_PADDING);
+
+  //Free the memory
+  free(raw);
+
+  return ret;
+}
+
+/* Frees memory that was allocated by gid_malloc, and asserts that none of the
+ * memory outside of the allocated region was corrupted.
+ * @param memory - Pointer to the memory that was allocated by gid_malloc. */
+#define gid_free(memory)                                                      \
+{                                                                             \
+  void* __gidloc_mem = (memory);                                              \
+  assert_not_null(__gidloc_mem);                                              \
+  assert_message(                                                             \
+    _gid_free_and_check(__gidloc_mem),                                        \
+     "gid_free detected memory corruption. Either you modified memory outside"\
+     " of the 'requested region', or you are freeing the wrong pointer.");    \
+}
 
 #endif/*GIDUNIT_H*/
