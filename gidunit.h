@@ -1826,8 +1826,8 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_pointer_eq(expected, actual)                                   \
   {                                                                           \
-    void* _gidExpVal = (expected);                                            \
-    void* _gidActVal = (actual);                                              \
+    const void* _gidExpVal = (expected);                                      \
+    const void* _gidActVal = (actual);                                        \
     assert_message_format(                                                    \
       _gidExpVal == _gidActVal,                                               \
       "Expected '"#actual"' to evaluate to %p"                                \
@@ -1841,8 +1841,8 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_pointer_not_eq(unexpected, actual)                             \
   {                                                                           \
-    void* _gidExpVal = (unexpected);                                          \
-    void* _gidActVal = (actual);                                              \
+    const void* _gidExpVal = (unexpected);                                    \
+    const void* _gidActVal = (actual);                                        \
     assert_message_format(                                                    \
       _gidExpVal != _gidActVal,                                               \
       "'"#actual"' evaluated to the unexpected value %p.",                    \
@@ -1853,7 +1853,7 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param pointer - The pointer. */
 #define assert_null(pointer)                                                  \
   {                                                                           \
-    void* _gidActual = (pointer);                                             \
+    const void* _gidActual = (pointer);                                       \
     assert_message_format(                                                    \
       _gidActual == NULL,                                                     \
       "'"#pointer"' was %p, not NULL.",                                       \
@@ -1864,7 +1864,7 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param pointer - The pointer. */
 #define assert_not_null(pointer)                                              \
   {                                                                           \
-    void* _gidActual = (pointer);                                             \
+    const void* _gidActual = (pointer);                                       \
     assert_message(_gidActual != NULL, "'"#pointer"' was NULL.");             \
   }
 
@@ -1873,8 +1873,8 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_string_eq(expected, actual)                                    \
   {                                                                           \
-    char* _gidExpVal = (char*)(expected);                                     \
-    char* _gidActVal = (char*)(actual);                                       \
+    const char* _gidExpVal = (char*)(expected);                               \
+    const char* _gidActVal = (char*)(actual);                                 \
     assert_message_format(                                                    \
       strcmp(_gidExpVal, _gidActVal)==0,                                      \
       "Expected "#actual" to be equal to \"%s\""                              \
@@ -1888,8 +1888,8 @@ int32_t _gid_stop_timer(GIDTimer* timer)
  * @param actual - The actual value. */
 #define assert_string_not_eq(unexpected, actual)                              \
   {                                                                           \
-    char* _gidExpVal = (char*)(unexpected);                                   \
-    char* _gidActVal = (char*)(actual);                                       \
+    const char* _gidExpVal = (char*)(unexpected);                             \
+    const char* _gidActVal = (char*)(actual);                                 \
     assert_message_format(                                                    \
       strcmp(_gidExpVal, _gidActVal)!=0,                                      \
       #actual" was equal to the unexpected value \"%s\".",                    \
