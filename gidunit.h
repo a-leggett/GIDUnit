@@ -2179,9 +2179,9 @@ void _gid_test_suite_func_##suite_name()                                      \
  *          }
  * */
 #define Test(test_name, ...)                                                  \
+        _gid_end_previous_test_scope                                          \
         void* gid_test_##test_name = NULL;/*Unused var to force unique names*/\
         (void)gid_test_##test_name;                                           \
-        _gid_end_previous_test_scope                                          \
         _gid_start_next_test_scope(test_name)                                 \
         GIDParamBase* _gid_int_row_params = NULL;                             \
         GIDParamBase* _gid_uint_row_params = NULL;                            \
